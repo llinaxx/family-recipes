@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "title": "Борщ",
+    "author_id": 2,
+    "category_id": 1,
+    "cooking_time": 90,
+    "difficulty": "средне",
+    "is_favorite": true
+  },
+  {
+    "id": 2,
+    "title": "Салат Оливье",
+    "author_id": 1,
+    "category_id": 2,
+    "cooking_time": 40,
+    "difficulty": "легко",
+    "is_favorite": false
+  },
+  {
+    "id": 3,
+    "title": "Тирамису",
+    "author_id": 3,
+    "category_id": 3,
+    "cooking_time": 30,
+    "difficulty": "средне",
+    "is_favorite": true
+  }
+]

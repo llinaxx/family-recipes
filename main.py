@@ -1,88 +1,73 @@
 """
-Сервис управления кулинарными рецептами семьи.
+Family Recipes — сервис управления кулинарными рецептами семьи.
 """
 
-from datetime import date
-
-# --- Данные семьи ---
-family_name = "Гревцевы"
-family_members_count = 3
-family_created_at = date(2026, 9, 21)
-
-# --- Данные участников ---
-member_1_name = "Папа"
-member_1_role = "member"
-
-member_2_name = "Мама"
-member_2_role = "member"
-
-member_3_name = "Дочь"
-member_3_role = "admin"
-
-# --- Данные категории ---
-category_name = "Суп"
-category_description = "Первые блюда"
-
-# --- Данные рецепта ---
-recipe_title = "Борщ"
-recipe_author = member_2_name
-recipe_category = category_name
-recipe_cooking_time = 90       # минуты
-recipe_servings = 6
-recipe_is_family_favorite = True
+from storage import load_data, save_data
+from models.recipes import (
+    add_recipe,
+    find_recipes_by_title,
+    filter_recipes_by_time,
+    sort_recipes_by_time,
+    get_recipes_stats,
+)
+from utils import input_int
 
 
-# --- Функции ---
-
-def get_family_info(name, members_count, created_at):
-    """Вернуть строку с информацией о семье."""
-    return f"Семья «{name}» — {members_count} участника, создана {created_at}"
-
-
-def get_recipe_info(title, author, category):
-    """Вернуть строку с основной информацией о рецепте."""
-    return f"Рецепт «{title}» (автор: {author}, категория: {category})"
+def show_recipes(recipes: list) -> None:
+    """Вывести список рецептов."""
+    if not recipes:
+        print("Рецептов нет.")
+        return
+    for r in recipes:
+        fav = "★" if r["is_favorite"] else " "
+        print(f"{fav} [{r['id']}] {r['title']} — {r['cooking_time']} мин")
 
 
-def check_cooking_time(time_minutes):
-    """Классифицировать рецепт по времени готовки."""
-    if time_minutes <= 30:
-        return "Быстрый рецепт (до 30 минут)"
-    elif time_minutes <= 60:
-        return "Среднее время готовки (30–60 минут)"
-    return "Долгий рецепт (более 60 минут)"
+def main() -> None:
+    recipes = load_data("recipes.json")
+
+    while True:
+        print("\n=== Семейные рецепты ===")
+        print("1. Показать все рецепты")
+        print("2. Найти рецепт по названию")
+        print("3. Фильтр по времени готовки")
+        print("4. Сортировать по времени")
+        print("5. Статистика")
+        print("6. Добавить рецепт")
+        print("0. Выход")
+        choice = input_int("Выберите действие: ")
+
+        if choice == 0:
+            save_data("recipes.json", recipes)
+            print("Данные сохранены. До свидания!")
+            break
+        elif choice == 1:
+            show_recipes(recipes)
+        elif choice == 2:
+            query = input("Введите часть названия: ")
+            show_recipes(find_recipes_by_title(recipes, query))
+        elif choice == 3:
+            max_time = input_int("Максимальное время (мин): ")
+            show_recipes(filter_recipes_by_time(recipes, max_time))
+        elif choice == 4:
+            show_recipes(sort_recipes_by_time(recipes))
+        elif choice == 5:
+            stats = get_recipes_stats(recipes)
+            print(f"Всего рецептов: {stats['total']}")
+            print(f"Среднее время готовки: {stats['avg_time']} мин")
+            print(f"Избранных: {stats['favorites']}")
+        elif choice == 6:
+            title = input("Название рецепта: ")
+            author_id = input_int("ID автора: ")
+            category_id = input_int("ID категории: ")
+            cooking_time = input_int("Время готовки (мин): ")
+            difficulty = input("Сложность (легко/средне/сложно): ")
+            add_recipe(recipes, title, author_id, category_id,
+                       cooking_time, difficulty)
+            print(f"Рецепт «{title}» добавлен.")
+        else:
+            print("Неверный выбор.")
 
 
-def check_servings(servings, members_count):
-    """Проверить, хватит ли порций на всю семью."""
-    if servings >= members_count:
-        return "Порций хватит на всю семью"
-    return "Порций недостаточно для всей семьи"
-
-
-def is_favorite(status):
-    """Вернуть текстовый статус избранного рецепта."""
-    if status:
-        return "Рецепт в избранном семьи"
-    return "Рецепт не отмечен как избранный"
-
-
-# --- Основной сценарий ---
-
-print("=" * 50)
-print(get_family_info(family_name, family_members_count, family_created_at))
-print("=" * 50)
-
-print("\nУчастники семьи:")
-print(f"  • {member_1_name} ({member_1_role})")
-print(f"  • {member_2_name} ({member_2_role})")
-print(f"  • {member_3_name} ({member_3_role})")
-
-print("\nКатегория:")
-print(f"  • {category_name}: {category_description}")
-
-print("\nРецепт:")
-print(f"  {get_recipe_info(recipe_title, recipe_author, recipe_category)}")
-print(f"  {check_cooking_time(recipe_cooking_time)}")
-print(f"  {check_servings(recipe_servings, family_members_count)}")
-print(f"  {is_favorite(recipe_is_family_favorite)}")
+if __name__ == "__main__":
+    main()
