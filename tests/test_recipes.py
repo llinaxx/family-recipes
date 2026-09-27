@@ -1,56 +1,45 @@
-from models.recipes import (
-    add_recipe,
-    find_recipes_by_title,
-    filter_recipes_by_time,
-    sort_recipes_by_time,
-    get_recipes_stats,
-)
+from models import Member, Category, Recipe
 
 
-def test_add_recipe():
-    recipes = []
-    add_recipe(recipes, "Борщ", 1, 1, 90, "средне")
-    assert len(recipes) == 1
-    assert recipes[0]["title"] == "Борщ"
-    assert recipes[0]["is_favorite"] is False
+def make_recipe():
+    author = Member(1, "Мама", "admin")
+    category = Category(1, "Суп", "Первые блюда")
+    return Recipe(1, "Борщ", author, category, 90, "средне", False)
 
 
-def test_find_recipes_by_title():
-    recipes = []
-    add_recipe(recipes, "Борщ", 1, 1, 90, "средне")
-    add_recipe(recipes, "Салат", 1, 2, 15, "легко")
-    assert len(find_recipes_by_title(recipes, "бор")) == 1
-    assert len(find_recipes_by_title(recipes, "САЛ")) == 1
-    assert len(find_recipes_by_title(recipes, "пицца")) == 0
+def test_recipe_creation():
+    r = make_recipe()
+    assert r.id == 1
+    assert r.title == "Борщ"
+    assert r.author.name == "Мама"
+    assert r.category.name == "Суп"
+    assert r.cooking_time == 90
+    assert r.is_favorite is False
 
 
-def test_filter_recipes_by_time():
-    recipes = []
-    add_recipe(recipes, "Борщ", 1, 1, 90, "средне")
-    add_recipe(recipes, "Салат", 1, 2, 15, "легко")
-    assert len(filter_recipes_by_time(recipes, 30)) == 1
-    assert len(filter_recipes_by_time(recipes, 100)) == 2
+def test_recipe_is_quick():
+    r = make_recipe()
+    assert r.is_quick(100) is True
+    assert r.is_quick(30) is False
 
 
-def test_sort_recipes_by_time():
-    recipes = []
-    add_recipe(recipes, "Борщ", 1, 1, 90, "средне")
-    add_recipe(recipes, "Салат", 1, 2, 15, "легко")
-    sorted_recipes = sort_recipes_by_time(recipes)
-    assert sorted_recipes[0]["title"] == "Салат"
+def test_recipe_mark_favorite():
+    r = make_recipe()
+    r.mark_favorite()
+    assert r.is_favorite is True
 
 
-def test_get_recipes_stats():
-    recipes = []
-    add_recipe(recipes, "Борщ", 1, 1, 90, "средне")
-    add_recipe(recipes, "Салат", 1, 2, 30, "легко")
-    stats = get_recipes_stats(recipes)
-    assert stats["total"] == 2
-    assert stats["avg_time"] == 60.0
-    assert stats["favorites"] == 0
+def test_recipe_str():
+    r = make_recipe()
+    text = str(r)
+    assert "Борщ" in text
+    assert "Мама" in text
+    assert "Суп" in text
 
 
-def test_empty_stats():
-    stats = get_recipes_stats([])
-    assert stats["total"] == 0
-    assert stats["avg_time"] == 0
+def test_recipe_to_data():
+    r = make_recipe()
+    data = r.to_data()
+    assert data["author_id"] == 1
+    assert data["category_id"] == 1
+    assert data["title"] == "Борщ"

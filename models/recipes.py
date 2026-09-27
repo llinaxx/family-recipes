@@ -1,43 +1,65 @@
-from typing import List, Dict
+"""Класс Recipe — кулинарный рецепт."""
+from .members import Member
+from .categories import Category
 
 
-def add_recipe(recipes: List[Dict], title: str, author_id: int,
-               category_id: int, cooking_time: int, difficulty: str) -> Dict:
-    """Добавить рецепт в список."""
-    recipe_id = len(recipes) + 1
-    recipe = {
-        "id": recipe_id,
-        "title": title,
-        "author_id": author_id,
-        "category_id": category_id,
-        "cooking_time": cooking_time,
-        "difficulty": difficulty,
-        "is_favorite": False,
-    }
-    recipes.append(recipe)
-    return recipe
+class Recipe:
+    """Кулинарный рецепт."""
 
+    def __init__(
+        self,
+        recipe_id: int,
+        title: str,
+        author: Member,
+        category: Category,
+        cooking_time: int,
+        difficulty: str = "средне",
+        is_favorite: bool = False,
+    ) -> None:
+        self.id = recipe_id
+        self.title = title
+        self.author = author
+        self.category = category
+        self.cooking_time = cooking_time
+        self.difficulty = difficulty
+        self.is_favorite = is_favorite
 
-def find_recipes_by_title(recipes: List[Dict], query: str) -> List[Dict]:
-    """Найти рецепты по подстроке названия."""
-    return [r for r in recipes if query.lower() in r["title"].lower()]
+    def is_quick(self, threshold: int = 30) -> bool:
+        """Проверить, быстрый ли рецепт."""
+        return self.cooking_time <= threshold
 
+    def mark_favorite(self) -> None:
+        """Отметить рецепт как избранный."""
+        self.is_favorite = True
 
-def filter_recipes_by_time(recipes: List[Dict], max_time: int) -> List[Dict]:
-    """Отобрать рецепты по времени готовки."""
-    return [r for r in recipes if r["cooking_time"] <= max_time]
+    def __str__(self) -> str:
+        fav = "★" if self.is_favorite else " "
+        return (
+            f"{fav} [{self.id}] {self.title} — {self.cooking_time} мин "
+            f"({self.category.name}, автор: {self.author.name})"
+        )
 
+    @classmethod
+    def from_data(cls, data: dict, author: Member, category: Category) -> "Recipe":
+        """Создать рецепт из словаря, связав с автором и категорией."""
+        return cls(
+            recipe_id=data["id"],
+            title=data["title"],
+            author=author,
+            category=category,
+            cooking_time=data["cooking_time"],
+            difficulty=data.get("difficulty", "средне"),
+            is_favorite=data.get("is_favorite", False),
+        )
 
-def sort_recipes_by_time(recipes: List[Dict]) -> List[Dict]:
-    """Сортировка рецептов по времени готовки."""
-    return sorted(recipes, key=lambda r: r["cooking_time"])
-
-
-def get_recipes_stats(recipes: List[Dict]) -> Dict:
-    """Статистика: всего рецептов, среднее время, избранных."""
-    if not recipes:
-        return {"total": 0, "avg_time": 0, "favorites": 0}
-    total = len(recipes)
-    avg_time = sum(r["cooking_time"] for r in recipes) / total
-    favorites = sum(1 for r in recipes if r["is_favorite"])
-    return {"total": total, "avg_time": round(avg_time, 1), "favorites": favorites}
+    def to_data(self) -> dict:
+        """Преобразовать в словарь для JSON."""
+        return {
+            "id": self.id,
+            "title": self.title,
+            "author_id": self.author.id,
+            "category_id": self.category.id,
+            "cooking_time": self.cooking_time,
+            "difficulty": self.difficulty,
+            "is_favorite": self.is_favorite,
+        }

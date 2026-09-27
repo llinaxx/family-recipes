@@ -25,6 +25,28 @@
 - Рецепт (recipe)
 - Категория (category)
 
+## Классы проекта
+
+### Family
+Семья — группа пользователей с общими рецептами.
+Атрибуты: `id`, `name`, `created_at`, `members`.
+Методы: `add_member()`, `from_data()`, `to_data()`, `__str__()`.
+
+### Member
+Участник семьи.
+Атрибуты: `id`, `name`, `role`.
+Методы: `is_admin()`, `from_data()`, `to_data()`, `__str__()`.
+
+### Category
+Категория блюд.
+Атрибуты: `id`, `name`, `description`.
+Методы: `from_data()`, `to_data()`, `__str__()`.
+
+### Recipe
+Кулинарный рецепт.
+Атрибуты: `id`, `title`, `author`, `category`, `cooking_time`, `difficulty`, `is_favorite`.
+Методы: `is_quick()`, `mark_favorite()`, `from_data()`, `to_data()`, `__str__()`.
+
 ## Возможности
 
 - просмотр списка рецептов;
@@ -32,7 +54,8 @@
 - фильтрация по времени готовки;
 - сортировка по времени;
 - статистика (всего рецептов, среднее время, избранные);
-- добавление нового рецепта;
+- просмотр семей;
+- пометка рецепта как избранного;
 - сохранение данных в JSON-файлы.
 
 ## Структура проекта
@@ -42,6 +65,11 @@ family-recipes/
 ├── storage.py
 ├── utils.py
 ├── models/
+│   ├── __init__.py
+│   ├── families.py
+│   ├── members.py
+│   ├── categories.py
+│   └── recipes.py
 ├── data/
 ├── tests/
 ├── requirements.txt

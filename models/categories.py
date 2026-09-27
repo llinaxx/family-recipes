@@ -1,17 +1,30 @@
-from typing import List, Dict
+"""Класс Category — категория блюд."""
 
 
-def add_category(categories: List[Dict], name: str, description: str = "") -> Dict:
-    """Добавить категорию."""
-    category_id = len(categories) + 1
-    category = {"id": category_id, "name": name, "description": description}
-    categories.append(category)
-    return category
+class Category:
+    """Категория блюд."""
 
+    def __init__(self, category_id: int, name: str, description: str = "") -> None:
+        self.id = category_id
+        self.name = name
+        self.description = description
 
-def find_category_by_name(categories: List[Dict], name: str) -> Dict:
-    """Найти категорию по названию."""
-    for c in categories:
-        if c["name"].lower() == name.lower():
-            return c
-    return {}
+    def __str__(self) -> str:
+        return f"Категория «{self.name}»"
+
+    @classmethod
+    def from_data(cls, data: dict) -> "Category":
+        """Создать категорию из словаря."""
+        return cls(
+            category_id=data["id"],
+            name=data["name"],
+            description=data.get("description", ""),
+        )
+
+    def to_data(self) -> dict:
+        """Преобразовать в словарь для JSON."""
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+        }

@@ -1,5 +1,17 @@
 [
-  {"id": 1, "name": "Папа", "role": "member", "family_id": 1},
-  {"id": 2, "name": "Мама", "role": "member", "family_id": 1},
-  {"id": 3, "name": "Дочь", "role": "admin", "family_id": 1}
+  {
+    "id": 1,
+    "name": "Папа",
+    "role": "member"
+  },
+  {
+    "id": 2,
+    "name": "Мама",
+    "role": "member"
+  },
+  {
+    "id": 3,
+    "name": "Дочь",
+    "role": "admin"
+  }
 ]
