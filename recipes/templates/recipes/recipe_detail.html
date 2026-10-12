@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if recipe %}{{ recipe.title }} — Family Recipes{% else %}Рецепт не найден{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if recipe %}
+<div class="card">
+    <div class="card-body">
+        <h1 class="card-title">{{ recipe.title }}</h1>
+        <p><strong>ID:</strong> {{ recipe.id }}</p>
+        <p><strong>Автор:</strong> {{ recipe.author.name }}</p>
+        <p><strong>Категория:</strong> {{ recipe.category.name }}</p>
+        <p><strong>Время готовки:</strong> {{ recipe.cooking_time }} мин</p>
+        <p><strong>Сложность:</strong> {{ recipe.difficulty }}</p>
+        <p>
+            {% if recipe.is_quick %}
+                <span class="badge bg-success">Быстрый</span>
+            {% else %}
+                <span class="badge bg-info text-dark">Долгий</span>
+            {% endif %}
+            {% if recipe.is_favorite %}
+                <span class="badge bg-warning text-dark">Избранный</span>
+            {% else %}
+                <span class="badge bg-secondary">Не избранный</span>
+            {% endif %}
+        </p>
+        <a href="{% url 'recipes:list' %}" class="btn btn-outline-secondary">
+            ← к списку рецептов
+        </a>
+    </div>
+</div>
+{% else %}
+<h1 class="text-danger">Рецепт не найден</h1>
+<p>Рецепт с указанным идентификатором отсутствует.</p>
+<a href="{% url 'recipes:list' %}" class="btn btn-outline-secondary">
+    ← к списку рецептов
+</a>
+{% endif %}
+{% endblock %}

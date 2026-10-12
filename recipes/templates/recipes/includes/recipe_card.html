@@ -1,0 +1,11 @@
+<li class="list-group-item d-flex justify-content-between align-items-center">
+    <span>
+        {% if recipe.is_favorite %}★{% endif %}
+        {{ recipe.title|default:"Без названия" }} —
+        {{ recipe.cooking_time }} мин
+        ({{ recipe.category.name }}, автор: {{ recipe.author.name }})
+    </span>
+    <a href="{% url 'recipes:detail' recipe.id %}" class="btn btn-sm btn-primary">
+        Подробнее
+    </a>
+</li>

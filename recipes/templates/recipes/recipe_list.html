@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Рецепты — Family Recipes{% endblock %}
+
+{% block content %}
+<h1>Рецепты</h1>
+<p>Всего рецептов: {{ recipes|length }}</p>
+<ul class="list-group">
+    {% for recipe in recipes %}
+        {% include "recipes/includes/recipe_card.html" %}
+    {% empty %}
+        <li class="list-group-item">Рецептов не найдено.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

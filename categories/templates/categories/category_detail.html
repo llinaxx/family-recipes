@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if category %}{{ category.name }} — Family Recipes{% else %}Категория не найдена{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if category %}
+<h1>Категория: {{ category.name }}</h1>
+<p>{{ category.description }}</p>
+<h3>Рецепты:</h3>
+<ul class="list-group">
+    {% for recipe in recipes %}
+        {% if recipe.category.id == category.id %}
+            <li class="list-group-item">
+                {{ recipe.title }} — {{ recipe.cooking_time }} мин
+            </li>
+        {% endif %}
+    {% empty %}
+        <li class="list-group-item">Рецептов нет.</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'categories:list' %}" class="btn btn-outline-secondary mt-3">
+    ← к списку категорий
+</a>
+{% else %}
+<h1 class="text-danger">Категория не найдена</h1>
+<a href="{% url 'categories:list' %}" class="btn btn-outline-secondary">
+    ← к списку категорий
+</a>
+{% endif %}
+{% endblock %}

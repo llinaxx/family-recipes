@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Категории — Family Recipes{% endblock %}
+
+{% block content %}
+<h1>Категории</h1>
+<p>Всего категорий: {{ categories|length }}</p>
+<ul class="list-group">
+    {% for category in categories %}
+        {% include "categories/includes/category_card.html" %}
+    {% empty %}
+        <li class="list-group-item">Категорий не найдено.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
