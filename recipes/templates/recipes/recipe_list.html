@@ -3,13 +3,39 @@
 {% block title %}Рецепты — Family Recipes{% endblock %}
 
 {% block content %}
-<h1>Рецепты</h1>
-<p>Всего рецептов: {{ recipes|length }}</p>
-<ul class="list-group">
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="display-5">Наши рецепты</h1>
+    <span class="badge bg-secondary fs-6">Всего: {{ recipes|length }}</span>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     {% for recipe in recipes %}
-        {% include "recipes/includes/recipe_card.html" %}
+    <div class="col">
+        <div class="card h-100 recipe-card shadow-sm">
+            <div class="recipe-image-placeholder">
+                🥘
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="badge badge-category">{{ recipe.category_name }}</span>
+                    <span class="badge badge-time">⏱ {{ recipe.cooking_time }} мин</span>
+                </div>
+                <h5 class="card-title fw-bold">
+                    {% if recipe.is_favorite %}⭐ {% endif %}{{ recipe.title }}
+                </h5>
+                <p class="card-text text-muted small">Автор: {{ recipe.author_name }}</p>
+            </div>
+            <div class="card-footer bg-transparent border-0 pb-3">
+                <a href="{% url 'recipes:detail' recipe.id %}" class="btn btn-outline-warning w-100 fw-bold">
+                    Смотреть рецепт
+                </a>
+            </div>
+        </div>
+    </div>
     {% empty %}
-        <li class="list-group-item">Рецептов не найдено.</li>
+    <div class="col-12">
+        <div class="alert alert-info">Рецептов пока нет.</div>
+    </div>
     {% endfor %}
-</ul>
+</div>
 {% endblock %}

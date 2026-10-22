@@ -3,9 +3,15 @@
 {% block title %}Главная — Family Recipes{% endblock %}
 
 {% block content %}
-<h1 class="display-4">Family Recipes</h1>
-<p class="lead">Сервис для хранения кулинарных рецептов семьи.</p>
-<p>Основные разделы:</p>
-<a href="{% url 'recipes:list' %}" class="btn btn-primary me-2">Рецепты</a>
-<a href="{% url 'categories:list' %}" class="btn btn-secondary">Категории</a>
+<div class="p-5 mb-4 bg-white rounded-3 shadow-sm text-center">
+    <h1 class="display-4 fw-bold" style="font-family: 'Playfair Display', serif; color: #d35400;">
+        Семейная кулинарная книга
+    </h1>
+    <p class="lead mt-3">Храните лучшие рецепты вашей семьи в одном месте.</p>
+    <hr class="my-4">
+    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+        <a href="{% url 'recipes:list' %}" class="btn btn-warning btn-lg px-4 gap-3 fw-bold">К рецептам</a>
+        <a href="{% url 'categories:list' %}" class="btn btn-outline-secondary btn-lg px-4">Категории</a>
+    </div>
+</div>
 {% endblock %}

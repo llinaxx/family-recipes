@@ -1,5 +1,10 @@
-<nav class="nav bg-light p-3 mb-4">
-    <a class="nav-link" href="{% url 'homepage:index' %}">Главная</a>
-    <a class="nav-link" href="{% url 'recipes:list' %}">Рецепты</a>
-    <a class="nav-link" href="{% url 'categories:list' %}">Категории</a>
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'homepage:index' %}">🍲 Family Recipes</a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="{% url 'homepage:index' %}">Главная</a>
+            <a class="nav-link" href="{% url 'recipes:list' %}">Рецепты</a>
+            <a class="nav-link" href="{% url 'categories:list' %}">Категории</a>
+        </div>
+    </div>
 </nav>

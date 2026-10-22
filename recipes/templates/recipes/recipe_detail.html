@@ -6,36 +6,49 @@
 
 {% block content %}
 {% if recipe %}
-<div class="card">
-    <div class="card-body">
-        <h1 class="card-title">{{ recipe.title }}</h1>
-        <p><strong>ID:</strong> {{ recipe.id }}</p>
-        <p><strong>Автор:</strong> {{ recipe.author.name }}</p>
-        <p><strong>Категория:</strong> {{ recipe.category.name }}</p>
-        <p><strong>Время готовки:</strong> {{ recipe.cooking_time }} мин</p>
-        <p><strong>Сложность:</strong> {{ recipe.difficulty }}</p>
-        <p>
-            {% if recipe.is_quick %}
-                <span class="badge bg-success">Быстрый</span>
-            {% else %}
-                <span class="badge bg-info text-dark">Долгий</span>
-            {% endif %}
-            {% if recipe.is_favorite %}
-                <span class="badge bg-warning text-dark">Избранный</span>
-            {% else %}
-                <span class="badge bg-secondary">Не избранный</span>
-            {% endif %}
-        </p>
-        <a href="{% url 'recipes:list' %}" class="btn btn-outline-secondary">
-            ← к списку рецептов
-        </a>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow border-0 recipe-card">
+            <!-- Красивая цветная шапка карточки -->
+            <div class="card-header bg-warning text-white py-3" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);">
+                <h1 class="mb-0">{{ recipe.title }}</h1>
+            </div>
+            
+            <div class="card-body p-4">
+                <!-- Бейджи с информацией -->
+                <div class="mb-4">
+                    <span class="badge badge-category fs-6 me-2">{{ recipe.category_name }}</span>
+                    <span class="badge badge-time fs-6 me-2">⏱ {{ recipe.cooking_time }} мин</span>
+                    {% if recipe.is_favorite %}
+                        <span class="badge bg-danger fs-6">⭐ Избранное</span>
+                    {% endif %}
+                </div>
+                
+                <h5 class="text-muted mb-4">Автор: {{ recipe.author_name }}</h5>
+                
+                <div class="mb-3">
+                    <p class="mb-1"><strong>Сложность:</strong> {{ recipe.difficulty }}</p>
+                    <p class="mb-1"><strong>ID рецепта в базе данных:</strong> {{ recipe.id }}</p>
+                </div>
+
+                <hr class="my-4">
+                
+                <!-- Кнопка возврата -->
+                <a href="{% url 'recipes:list' %}" class="btn btn-outline-dark">
+                    ← Вернуться к списку рецептов
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 {% else %}
-<h1 class="text-danger">Рецепт не найден</h1>
-<p>Рецепт с указанным идентификатором отсутствует.</p>
-<a href="{% url 'recipes:list' %}" class="btn btn-outline-secondary">
-    ← к списку рецептов
-</a>
+<!-- Если рецепта нет, показываем ошибку -->
+<div class="alert alert-danger text-center shadow-sm">
+    <h1 class="display-4">404</h1>
+    <p class="lead">Рецепт с указанным идентификатором не найден в базе данных.</p>
+    <a href="{% url 'recipes:list' %}" class="btn btn-outline-danger mt-3">
+        ← Вернуться к списку
+    </a>
+</div>
 {% endif %}
 {% endblock %}
