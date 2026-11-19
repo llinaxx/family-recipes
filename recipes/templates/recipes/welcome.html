@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .hero-dark {
+        background-color: var(--bg-dark);
+        color: var(--text-cream);
+        height: 85vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0 20px;
+        margin-top: -20px; /* Убираем отступ под меню */
+    }
+
+    .hero-content {
+        max-width: 900px;
+    }
+
+    .hero-title {
+        font-size: 5.5rem;
+        font-weight: 700;
+        color: var(--text-cream);
+        margin-bottom: 25px;
+        line-height: 1.1;
+    }
+
+    .hero-text {
+        font-size: 1.2rem;
+        color: var(--text-cream);
+        opacity: 0.8;
+        margin-bottom: 50px;
+        font-weight: 300;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .btn-accent {
+        display: inline-block;
+        background-color: var(--accent);
+        color: #FFFFFF;
+        padding: 18px 50px;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        text-decoration: none;
+        border: none;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        font-weight: 500;
+    }
+
+    .btn-accent:hover {
+        background-color: #E67E22;
+        transform: translateY(-3px);
+    }
+</style>
+
+<div class="hero-dark">
+    <div class="hero-content">
+        <h1 class="hero-title">Искусство<br>семейного вкуса</h1>
+        <p class="hero-text">Рецепты, проверенные поколениями</p>
+        <a href="{% url 'recipe_list' %}" class="btn-accent">Перейти в меню</a>
+    </div>
+</div>
+{% endblock %}

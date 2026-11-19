@@ -1,41 +1,122 @@
 {% extends "base.html" %}
 
-{% block title %}Рецепты — Family Recipes{% endblock %}
-
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="display-5">Наши рецепты</h1>
-    <span class="badge bg-secondary fs-6">Всего: {{ recipes|length }}</span>
-</div>
+<style>
+    .section-title {
+        font-size: 3.5rem;
+        text-align: center;
+        margin-top: 60px;
+        margin-bottom: 20px;
+        color: var(--bg-dark);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+    
+    /* Категории строго по центру с красивыми линиями по бокам */
+    .category-heading { 
+        font-family: 'Playfair Display', serif; 
+        font-size: 2.4rem; 
+        color: var(--bg-dark); 
+        margin-top: 70px; 
+        margin-bottom: 40px; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        text-align: center;
+    }
+    
+    .category-heading::before,
+    .category-heading::after {
+        content: '';
+        height: 1px;
+        width: 100px;
+        background-color: var(--border-color);
+    }
+    
+    /* Центрируем сетку с блюдами */
+    .recipes-grid { 
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 40px; 
+        margin: 0 auto 40px auto;
+        max-width: 1000px;
+    }
+    
+    .recipe-card-link { text-decoration: none; display: block; width: 300px; }
+    
+    /* Карточка без времени */
+    .recipe-card { 
+        background: #FFFFFF; 
+        border: 1px solid var(--border-color); 
+        border-radius: 8px;
+        padding: 50px 20px; /* Чуть увеличили отступы, так как текста стало меньше */
+        text-align: center; 
+        transition: all 0.4s ease; 
+        height: 100%; 
+        display: flex; 
+        flex-direction: column; 
+        justify-content: center; 
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Оранжевая полоска сверху при наведении */
+    .recipe-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 4px;
+        background-color: var(--accent);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+    
+    .recipe-card:hover::before { transform: scaleX(1); }
+    
+    .recipe-card:hover { 
+        box-shadow: 0 15px 35px rgba(62, 39, 35, 0.08); 
+        transform: translateY(-5px);
+        border-color: var(--bg-dark);
+    }
+    
+    .recipe-title { 
+        color: var(--bg-dark); 
+        font-family: 'Playfair Display', serif; 
+        font-size: 1.8rem; 
+        font-weight: 600; 
+        margin: 0; 
+        transition: color 0.3s ease; 
+    }
+    
+    .recipe-card:hover .recipe-title { 
+        color: var(--accent);
+    }
+</style>
 
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-    {% for recipe in recipes %}
-    <div class="col">
-        <div class="card h-100 recipe-card shadow-sm">
-            <div class="recipe-image-placeholder">
-                🥘
-            </div>
-            <div class="card-body">
-                <div class="d-flex justify-content-between mb-2">
-                    <span class="badge badge-category">{{ recipe.category_name }}</span>
-                    <span class="badge badge-time">⏱ {{ recipe.cooking_time }} мин</span>
-                </div>
-                <h5 class="card-title fw-bold">
-                    {% if recipe.is_favorite %}⭐ {% endif %}{{ recipe.title }}
-                </h5>
-                <p class="card-text text-muted small">Автор: {{ recipe.author_name }}</p>
-            </div>
-            <div class="card-footer bg-transparent border-0 pb-3">
-                <a href="{% url 'recipes:detail' recipe.id %}" class="btn btn-outline-warning w-100 fw-bold">
-                    Смотреть рецепт
-                </a>
+<div class="container">
+    <h1 class="section-title">Меню</h1>
+
+    {% regroup page_obj by category.name as category_list %}
+
+    {% for category in category_list %}
+        <div class="category-group">
+            <h2 class="category-heading">{{ category.grouper }}</h2>
+            
+            <div class="recipes-grid">
+                {% for recipe in category.list %}
+                    <a href="{% url 'recipe_detail' recipe.pk %}" class="recipe-card-link">
+                        <div class="recipe-card">
+                            <h3 class="recipe-title">{{ recipe.title }}</h3>
+                            <!-- Время убрано -->
+                        </div>
+                    </a>
+                {% endfor %}
             </div>
         </div>
-    </div>
     {% empty %}
-    <div class="col-12">
-        <div class="alert alert-info">Рецептов пока нет.</div>
-    </div>
+        <p class="text-center">Рецептов пока нет.</p>
     {% endfor %}
 </div>
 {% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Поиск рецептов</h1>
+
+<form method="get" action="{% url 'recipe_search' %}">
+    <input type="text" name="q" value="{{ query }}" placeholder="Название рецепта...">
+    <input type="number" name="max_time" value="{{ max_time }}" placeholder="Макс. время (мин)">
+    <select name="sort">
+        <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Сначала новые</option>
+        <option value="fastest" {% if sort_by == 'fastest' %}selected{% endif %}>Сначала быстрые</option>
+        <option value="title" {% if sort_by == 'title' %}selected{% endif %}>По алфавиту</option>
+    </select>
+    <button type="submit">Искать</button>
+</form>
+
+<hr>
+
+<ul>
+    {% for recipe in page_obj %}
+        <li>
+            <a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.title }}</a> 
+            ({{ recipe.category.name }}, {{ recipe.cooking_time }} мин.)
+        </li>
+    {% empty %}
+        <li>Ничего не найдено.</li>
+    {% endfor %}
+</ul>
+
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}&q={{ query }}&max_time={{ max_time }}&sort={{ sort_by }}">Назад</a>
+    {% endif %}
+    <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&q={{ query }}&max_time={{ max_time }}&sort={{ sort_by }}">Вперед</a>
+    {% endif %}
+</div>
+{% endblock %}

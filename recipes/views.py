@@ -1,39 +1,35 @@
-from django.shortcuts import render
-from db.database import get_connection
+from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator
+from django.db.models import Count, Avg
+from .models import Recipe, Category
 
-def recipes(request):
-    """Список рецептов из базы данных SQLite."""
-    conn = get_connection()
-    # Используем JOIN, чтобы сразу получить имена авторов и категорий
-    recipes_data = conn.execute("""
-        SELECT recipes.id, recipes.title, recipes.cooking_time, recipes.difficulty, recipes.is_favorite,
-               categories.name AS category_name, members.name AS author_name
-        FROM recipes
-        JOIN categories ON recipes.category_id = categories.id
-        JOIN members ON recipes.author_id = members.id
-        ORDER BY recipes.title;
-    """).fetchall()
-    conn.close()
-    
-    return render(request, "recipes/recipe_list.html", {"recipes": recipes_data})
+# Новая главная страница "Добро пожаловать"
+def welcome_view(request):
+    return render(request, 'recipes/welcome.html')
 
-def recipe_detail(request, recipe_id):
-    """Карточка рецепта из базы данных."""
-    conn = get_connection()
-    # Передаем recipe_id через параметр ? (защита от SQL-инъекций)
-    recipe = conn.execute("""
-        SELECT recipes.id, recipes.title, recipes.cooking_time, recipes.difficulty, recipes.is_favorite,
-               categories.name AS category_name, members.name AS author_name
-        FROM recipes
-        JOIN categories ON recipes.category_id = categories.id
-        JOIN members ON recipes.author_id = members.id
-        WHERE recipes.id = ?;
-    """, (recipe_id,)).fetchone()
-    conn.close()
-    
-    return render(
-        request, 
-        "recipes/recipe_detail.html", 
-        {"recipe": recipe},
-        status=404 if recipe is None else 200
-    )
+# Страница со списком рецептов
+def recipe_list(request):
+    recipes = Recipe.objects.all().order_by('category_id', 'id')
+    paginator = Paginator(recipes, 20) 
+    page_obj = paginator.get_page(request.GET.get('page'))
+    return render(request, 'recipes/recipe_list.html', {'page_obj': page_obj})
+
+def recipe_detail(request, pk):
+    recipe = get_object_or_404(Recipe, pk=pk)
+    return render(request, 'recipes/recipe_detail.html', {'recipe': recipe})
+
+def recipe_search(request):
+    query = request.GET.get('q', '')
+    recipes = Recipe.objects.select_related('category').all()
+    if query: recipes = recipes.filter(title__icontains=query)
+    paginator = Paginator(recipes, 10)
+    page_obj = paginator.get_page(request.GET.get('page'))
+    return render(request, 'recipes/search.html', {'page_obj': page_obj, 'query': query})
+
+def statistics(request):
+    avg_time = Recipe.objects.aggregate(Avg('cooking_time'))['cooking_time__avg']
+    total_recipes = Recipe.objects.count()
+    categories = Category.objects.annotate(recipe_count=Count('recipes')).order_by('id')
+    return render(request, 'recipes/stats.html', {
+        'avg_time': avg_time, 'total_recipes': total_recipes, 'categories': categories
+    })

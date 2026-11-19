@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Статистика</h1>
+<p>Всего рецептов: <strong>{{ total_recipes }}</strong></p>
+<p>Среднее время готовки: <strong>{{ avg_time|floatformat:1 }} мин.</strong></p>
+
+<h3>Рецепты по категориям:</h3>
+<ul>
+    {% for cat in categories %}
+        <li>{{ cat.name }}: {{ cat.recipe_count }} шт.</li>
+    {% endfor %}
+</ul>
+
+<h3>Десерты (поиск по названию категории):</h3>
+<ul>
+    {% for dessert in desserts %}
+        <li>{{ dessert.title }}</li>
+    {% empty %}
+        <li>Десертов нет.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,54 +1,65 @@
 {% extends "base.html" %}
 
-{% block title %}
-{% if recipe %}{{ recipe.title }} — Family Recipes{% else %}Рецепт не найден{% endif %}
-{% endblock %}
-
 {% block content %}
-{% if recipe %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card shadow border-0 recipe-card">
-            <!-- Красивая цветная шапка карточки -->
-            <div class="card-header bg-warning text-white py-3" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);">
-                <h1 class="mb-0">{{ recipe.title }}</h1>
-            </div>
-            
-            <div class="card-body p-4">
-                <!-- Бейджи с информацией -->
-                <div class="mb-4">
-                    <span class="badge badge-category fs-6 me-2">{{ recipe.category_name }}</span>
-                    <span class="badge badge-time fs-6 me-2">⏱ {{ recipe.cooking_time }} мин</span>
-                    {% if recipe.is_favorite %}
-                        <span class="badge bg-danger fs-6">⭐ Избранное</span>
-                    {% endif %}
-                </div>
-                
-                <h5 class="text-muted mb-4">Автор: {{ recipe.author_name }}</h5>
-                
-                <div class="mb-3">
-                    <p class="mb-1"><strong>Сложность:</strong> {{ recipe.difficulty }}</p>
-                    <p class="mb-1"><strong>ID рецепта в базе данных:</strong> {{ recipe.id }}</p>
-                </div>
+<style>
+    .recipe-header-dark {
+        background-color: var(--bg-dark);
+        color: var(--text-cream);
+        padding: 80px 20px;
+        text-align: center;
+        margin-top: -20px;
+    }
+    
+    .back-link { display: inline-block; margin-bottom: 30px; color: var(--text-cream); text-decoration: none; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; transition: opacity 0.3s; }
+    .back-link:hover { opacity: 1; color: var(--accent); }
+    
+    .detail-title { font-size: 4.5rem; margin-bottom: 20px; font-weight: 700; }
+    
+    .recipe-meta { display: flex; justify-content: center; gap: 50px; margin-bottom: 20px; flex-wrap: wrap; }
+    .meta-label { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-cream); opacity: 0.6; margin-bottom: 5px; }
+    .meta-value { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--accent); }
 
-                <hr class="my-4">
-                
-                <!-- Кнопка возврата -->
-                <a href="{% url 'recipes:list' %}" class="btn btn-outline-dark">
-                    ← Вернуться к списку рецептов
-                </a>
-            </div>
+    .recipe-body { padding: 80px 20px; background-color: var(--bg-cream); }
+    .recipe-grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 2fr; gap: 60px; }
+    @media (max-width: 768px) { .recipe-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+    .section-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--text-dark); margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid var(--accent); }
+    .ingredients-text { line-height: 2; font-size: 1rem; }
+    .instructions-text { line-height: 1.9; font-size: 1.1rem; }
+    .instructions-text p { margin-bottom: 20px; }
+</style>
+
+<div class="recipe-header-dark">
+    <a href="{% url 'recipe_list' %}" class="back-link">&larr; Вернуться к меню</a>
+    <h1 class="detail-title">{{ recipe.title }}</h1>
+    <div class="recipe-meta">
+        <div class="meta-item">
+            <span class="meta-label">Категория</span>
+            <span class="meta-value">{{ recipe.category.name }}</span>
+        </div>
+        <div class="meta-item">
+            <span class="meta-label">Время</span>
+            <span class="meta-value">{{ recipe.cooking_time }} мин.</span>
+        </div>
+        {% if recipe.author %}
+        <div class="meta-item">
+            <span class="meta-label">Автор</span>
+            <span class="meta-value">{{ recipe.author.role }}</span>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="recipe-body">
+    <div class="recipe-grid">
+        <div class="ingredients-section">
+            <h3 class="section-title">Ингредиенты</h3>
+            <div class="ingredients-text">{{ recipe.ingredients|linebreaks }}</div>
+        </div>
+        <div class="instructions-section">
+            <h3 class="section-title">Приготовление</h3>
+            <div class="instructions-text">{{ recipe.instructions|linebreaks }}</div>
         </div>
     </div>
 </div>
-{% else %}
-<!-- Если рецепта нет, показываем ошибку -->
-<div class="alert alert-danger text-center shadow-sm">
-    <h1 class="display-4">404</h1>
-    <p class="lead">Рецепт с указанным идентификатором не найден в базе данных.</p>
-    <a href="{% url 'recipes:list' %}" class="btn btn-outline-danger mt-3">
-        ← Вернуться к списку
-    </a>
-</div>
-{% endif %}
 {% endblock %}
