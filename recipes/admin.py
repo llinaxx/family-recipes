@@ -14,7 +14,7 @@ class AuthorAdmin(admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     # Отображаем название, категорию, автора и время
-    list_display = ('id', 'title', 'category', 'author', 'cooking_time')
+    list_display = ('id', 'title', 'category', 'author', 'cooking_time', 'image')
     # Добавляем фильтры справа
     list_filter = ('category', 'author') 
     # Поиск по названию и ингредиентам

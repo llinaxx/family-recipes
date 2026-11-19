@@ -132,3 +132,7 @@ STATICFILES_DIRS = [BASE_DIR / "homepage" / "static"]
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
+# Настройки медиафайлов (для загрузки картинок)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

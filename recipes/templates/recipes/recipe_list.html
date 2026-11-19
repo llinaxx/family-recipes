@@ -97,6 +97,9 @@
 
 <div class="container">
     <h1 class="section-title">Меню</h1>
+    <div style="text-align: center; margin-bottom: 40px;">
+        <a href="{% url 'recipe_create' %}" style="background: var(--bg-dark); color: white; padding: 12px 30px; text-decoration: none; text-transform: uppercase; letter-spacing: 2px;">+ Добавить рецепт</a>
+    </div>
 
     {% regroup page_obj by category.name as category_list %}
 
